@@ -243,12 +243,12 @@ const ArtTherapy = () => {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      // Enhance prompt with mood if selected
-      const prompt = selectedMood 
-        ? `${text} (Mood: ${moods[selectedMood].tooltip})` 
-        : text;
+      // // Enhance prompt with mood if selected
+      // const prompt = selectedMood 
+      //   ? `${text} (Mood: ${moods[selectedMood].tooltip})` 
+      //   : text;
         
-      const response = await axios.post("/generate", { text: prompt });
+      const response = await axios.post("/generate", { text: text });
       setImageUrl(response.data.image_url);
     } catch (error) {
       console.error("Error generating image:", error);

@@ -11,6 +11,7 @@ import ReportGenerator from "./components/ReportGenerator";
 import Chatbot from "./components/Chatbot";
 import MusicTherapy from "./components/MusicTherapy";
 import Responses from "./components/Responses";
+import Signup from "./components/Signup";
 
 function App() {
   // Check if user is authenticated
@@ -23,6 +24,7 @@ function App() {
       <Routes>
         {/* Public routes */}
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
         <Route path="/intro" element={<IntroPage />} />
 
         {/* Redirect root to intro page (landing page) */}

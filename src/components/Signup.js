@@ -16,6 +16,7 @@ const Signup = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const [email, setEmail] = useState("");
   const navigate = useNavigate();
 
   const handleSignup = async () => {
@@ -28,6 +29,7 @@ const Signup = () => {
       setError("");
       const response = await axios.post("http://localhost:3001/signup", {
         username,
+        email,
         password,
       });
 
@@ -73,6 +75,15 @@ const Signup = () => {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
+
+          <TextField
+            label="Email"
+            fullWidth
+            margin="normal"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+
 
           <TextField
             label="Password"
