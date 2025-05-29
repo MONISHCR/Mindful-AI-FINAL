@@ -51,7 +51,9 @@ const Login = () => {
       });
 
       const { token } = response.data;
+      const { userId } = response.data;
       localStorage.setItem("token", token);
+      localStorage.setItem("userId", userId);
 
       // Navigate to the dashboard after successful login
       navigate("/dashboard"); // Redirect user to dashboard

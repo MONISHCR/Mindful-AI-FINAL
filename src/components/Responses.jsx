@@ -9,11 +9,49 @@ import {
   CardContent,
   Grid,
   Divider,
+  Paper,
+  CircularProgress,
+  Fade,
+  useTheme,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { styled } from "@mui/material/styles";
+import { motion } from "framer-motion";
+
+const StyledCard = styled(Card)(({ theme }) => ({
+  height: '100%',
+  borderRadius: 16,
+  background: 'rgba(255, 255, 255, 0.9)',
+  backdropFilter: 'blur(10px)',
+  transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
+  '&:hover': {
+    transform: 'translateY(-5px)',
+    boxShadow: theme.shadows[10],
+  },
+}));
+
+const StyledAccordion = styled(Accordion)(({ theme }) => ({
+  background: 'transparent',
+  boxShadow: 'none',
+  '&:before': {
+    display: 'none',
+  },
+  '& .MuiAccordionSummary-root': {
+    borderRadius: theme.shape.borderRadius,
+    '&:hover': {
+      backgroundColor: 'rgba(0, 0, 0, 0.04)',
+    },
+  },
+}));
+
+const AnimatedGrid = styled(motion.div)({
+  width: '100%',
+});
 
 const Responses = () => {
+  const theme = useTheme();
   const [userData, setUserData] = useState({ journal: [], mood: [], quiz: [] });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,6 +77,7 @@ const Responses = () => {
         ]);
 
         setUserData({ journal, mood, quiz });
+        setLoading(false);
       } catch (err) {
         console.error("Error fetching responses:", err);
       }
@@ -60,19 +99,59 @@ const Responses = () => {
   };
 
   return (
-    <Box sx={{ p: 4 }}>
-      <Typography variant="h4" gutterBottom textAlign="center">
-        🧾 Your Dashboard
-      </Typography>
+    <Box
+      sx={{
+        p: 4,
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+      }}
+    >
+      <Fade in={true} timeout={1000}>
+        <Typography
+          variant="h4"
+          gutterBottom
+          textAlign="center"
+          sx={{
+            fontWeight: 700,
+            color: theme.palette.primary.main,
+            mb: 4,
+            textShadow: '2px 2px 4px rgba(0,0,0,0.1)',
+          }}
+        >
+          🧾 Your Wellness Journey
+        </Typography>
+      </Fade>
 
-      <Grid container spacing={3} mt={2}>
+      {loading ? (
+        <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh">
+          <CircularProgress />
+        </Box>
+      ) : (
+        <Grid container spacing={4} mt={2}>
         {/* Mood Entries */}
                 
         {/* Mood Entries */}
         <Grid item xs={12} md={4}>
-        <Card sx={{ borderRadius: 3, boxShadow: 3 }}>
+          <AnimatedGrid
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <StyledCard>
             <CardContent>
-            <Typography variant="h6" gutterBottom>😊 Mood Entries</Typography>
+            <Typography
+              variant="h6"
+              gutterBottom
+              sx={{
+                fontWeight: 600,
+                color: theme.palette.primary.main,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+              }}
+            >
+              <span style={{ fontSize: '1.5rem' }}>😊</span> Mood Entries
+            </Typography>
             <Divider sx={{ mb: 2 }} />
             {userData.mood.length > 0 ? (
                 userData.mood.map((entry, idx) => (
@@ -109,16 +188,34 @@ const Responses = () => {
                 </Typography>
             )}
             </CardContent>
-        </Card>
+            </StyledCard>
+          </AnimatedGrid>
         </Grid>
 
 
         {/* Journal Entries */}
         {/* Journal Entries */}
-<Grid item xs={12} md={4}>
-  <Card sx={{ borderRadius: 3, boxShadow: 3 }}>
+        <Grid item xs={12} md={4}>
+          <AnimatedGrid
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+          >
+            <StyledCard>
     <CardContent>
-      <Typography variant="h6" gutterBottom>📔 Journal Entries</Typography>
+      <Typography
+        variant="h6"
+        gutterBottom
+        sx={{
+          fontWeight: 600,
+          color: theme.palette.primary.main,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 1,
+        }}
+      >
+        <span style={{ fontSize: '1.5rem' }}>📔</span> Journal Entries
+      </Typography>
       <Divider sx={{ mb: 2 }} />
       {userData.journal.length > 0 ? (
         userData.journal.map((entry, idx) => (
@@ -141,15 +238,33 @@ const Responses = () => {
         </Typography>
       )}
     </CardContent>
-  </Card>
-</Grid>
+            </StyledCard>
+          </AnimatedGrid>
+        </Grid>
 
 
         {/* Quiz Answers */}
         <Grid item xs={12} md={4}>
-          <Card sx={{ borderRadius: 3, boxShadow: 3 }}>
+          <AnimatedGrid
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.6 }}
+          >
+            <StyledCard>
             <CardContent>
-              <Typography variant="h6" gutterBottom>🧠 Quiz Results</Typography>
+              <Typography
+                variant="h6"
+                gutterBottom
+                sx={{
+                  fontWeight: 600,
+                  color: theme.palette.primary.main,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1,
+                }}
+              >
+                <span style={{ fontSize: '1.5rem' }}>🧠</span> Quiz Results
+              </Typography>
               <Divider sx={{ mb: 2 }} />
               {userData.quiz.length > 0 ? (
                 userData.quiz.map((entry, idx) => (
@@ -185,9 +300,11 @@ const Responses = () => {
                 </Typography>
               )}
             </CardContent>
-          </Card>
+            </StyledCard>
+          </AnimatedGrid>
         </Grid>
       </Grid>
+      )}
     </Box>
   );
 };
