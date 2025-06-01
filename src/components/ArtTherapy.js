@@ -280,7 +280,7 @@ const ArtTherapy = () => {
                  User's expression: ${text}`;
       }
         
-      const response = await axios.post("/generate", { 
+      const response = await axios.post("https://mindful-ai-backend-aby0.onrender.com/generate", {
         text: prompt,
         mood: selectedMood !== null ? {
           name: moods[selectedMood].tooltip,
@@ -288,6 +288,7 @@ const ArtTherapy = () => {
           context: moods[selectedMood].promptPrefix
         } : null
       });
+      
       
       if (response.data && response.data.image_url) {
         setImageUrl(response.data.image_url);
