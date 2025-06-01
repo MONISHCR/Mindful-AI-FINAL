@@ -316,7 +316,7 @@ const Login = () => {
                   WebkitTextFillColor: 'transparent',
                 }}
               >
-                Welcome to MindfulAI
+                Welcome to MIND WELLNESS SITE
               </Typography>
               <Typography 
                 variant="body1" 

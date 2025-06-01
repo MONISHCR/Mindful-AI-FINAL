@@ -138,7 +138,7 @@ const Layout = () => {
     { id: "journal", title: "Journal", icon: <FiBookOpen />, route: "/home/journal" },
     { id: "art-therapy", title: "Art Therapy", icon: <FiImage />, route: "/home/art-therapy" },
     { id: "quiz", title: "Quizzes", icon: <FiActivity />, route: "/home/quiz" },
-    { id: "chatbot", title: "AI Chatbot", icon: <FiMessageCircle />, route: "/home/chatbot" },
+    // { id: "chatbot", title: "AI Chatbot", icon: <FiMessageCircle />, route: "/home/chatbot" },
     { id: "responses", title: "My Responses", icon: <FiDatabase />, route: "/home/responses" },
     { id: "report", title: "Report", icon: <FiBookOpen />, route: "/home/report" },
     // { id: "settings", title: "Settings", icon: <FiSettings />, route: "/home/settings" },
@@ -162,7 +162,7 @@ const Layout = () => {
                 fontWeight: 600,
               }}
             >
-              MindfulAI
+              MIND WELLNESS SITE
             </Typography>
           )}
           <IconButton

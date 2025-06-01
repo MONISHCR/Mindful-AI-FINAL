@@ -61,7 +61,7 @@ const Home = () => {
     <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "80vh", position: 'relative' }}>
       <StyledPaper>
         <Typography variant="h4" fontWeight={600}>
-          Welcome to MindfulAI
+          Welcome to MIND WELLNESS SITE
         </Typography>
         <Typography variant="h6" sx={{ mt: 2, mb: 4 }}>
           Select a feature to begin your journey.
@@ -73,10 +73,10 @@ const Home = () => {
               variant="contained" 
               color="primary"
               startIcon={<ChatIcon />}
-              onClick={() => navigate('/chatbot')}
+              onClick={() => navigate('/home/chatbot')}
               sx={{ backgroundColor: '#7F7FD5', '&:hover': { backgroundColor: '#6F6FC5' } }}
             >
-              Talk to MindfulAI Chatbot
+              Talk to MIND WELLNESS SITE Chatbot
             </FeatureButton>
           </Zoom>
 
@@ -91,16 +91,7 @@ const Home = () => {
             </FeatureButton>
           </Zoom>
 
-          <Zoom in={true} style={{ transitionDelay: '300ms' }}>
-            <FeatureButton 
-              variant="contained" 
-              startIcon={<SelfImprovementIcon />}
-              onClick={() => navigate('/art')}
-              sx={{ backgroundColor: '#FF5C5C', '&:hover': { backgroundColor: '#FF4C4C' } }}
-            >
-              Art Therapy
-            </FeatureButton>
-          </Zoom>
+          
         </ServicesGrid>
       </StyledPaper>
     </Box>

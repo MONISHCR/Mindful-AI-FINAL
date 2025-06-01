@@ -1172,7 +1172,7 @@ function Chatbot() {
                 <Box>
                   <Typography variant="h5" fontWeight={600} color="white" 
                     sx={{ textShadow: '0px 1px 2px rgba(0,0,0,0.1)' }}>
-                    MindfulAI Therapy Assistant
+                    MIND WELLNESS SITE Therapy Assistant
                   </Typography>
                   <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.9)' }}>
                     Your supportive companion for mental wellness
@@ -1214,7 +1214,7 @@ function Chatbot() {
                       <VolunteerActivismIcon fontSize="large" />
                     </Avatar>
                     <Typography variant="h5" color="primary" gutterBottom>
-                      Welcome to MindfulAI
+                      Welcome to MIND WELLNESS SITE
                     </Typography>
                     <Typography variant="body1" color="textSecondary" paragraph>
                       I'm here to listen, support, and provide guidance for your mental wellbeing.

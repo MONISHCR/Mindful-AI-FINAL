@@ -59,7 +59,7 @@ const Signup = () => {
             Create Your Account
           </Typography>
           <Typography variant="body1" align="center" sx={{ mb: 3 }}>
-            Join MindfulAI to begin your journey toward emotional wellness.
+            Join MIND WELLNESS SITE to begin your journey toward emotional wellness.
           </Typography>
 
           {error && (
