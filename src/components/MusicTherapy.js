@@ -588,7 +588,7 @@ const MusicTherapy = () => {
 
     try {
       // Call your Flask backend API
-      const backendUrl = `http://localhost:5003/api/search_song?mood=${encodeURIComponent(mood)}&language=${encodeURIComponent(language)}`;
+      const backendUrl = `https://mindful-ai-backend-3.onrender.com/api/search_song?mood=${encodeURIComponent(mood)}&language=${encodeURIComponent(language)}`;
       
       const response = await fetch(backendUrl);
       
