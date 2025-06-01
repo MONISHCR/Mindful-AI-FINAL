@@ -595,7 +595,7 @@ const MoodAnalysis = () => {
     const userType = studentMode ? "student" : "general";
     try {
       console.log(`Fetching questions for userType: ${userType}`);
-      const response = await axios.get(`http://localhost:3003/generate-questions?user_type=${userType}`);
+      const response = await axios.get(`https://mindful-ai-backend-2.onrender.com/generate-questions?user_type=${userType}`);
       if (response.data && Array.isArray(response.data) && response.data.length > 0) {
         setQuestions(response.data);
         console.log("Fetched questions:", response.data);
