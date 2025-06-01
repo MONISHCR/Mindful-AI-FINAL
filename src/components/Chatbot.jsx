@@ -937,7 +937,7 @@ function Chatbot() {
     setQuestion('');
     
     try {
-      const res = await fetch('http://localhost:5001/api/ask', {
+      const res = await fetch('https://mindful-ai-backend-4.onrender.com/api/ask', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
