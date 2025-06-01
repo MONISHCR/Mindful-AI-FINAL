@@ -2,61 +2,120 @@ import React, { useState, useContext } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import {
   Box, List, ListItem, ListItemIcon, ListItemText, AppBar, Toolbar, IconButton,
-  Typography, Avatar, Menu, MenuItem, Tooltip, Switch, Divider
+  Typography, Avatar, Menu, MenuItem, Tooltip, Switch, Divider, useTheme
 } from "@mui/material";
-import { styled, useTheme } from "@mui/material/styles";
+import { styled, keyframes } from "@mui/material/styles";
 import {
   FiMenu, FiMessageSquare, FiActivity, FiBookOpen, FiSettings, FiImage, FiLogOut, FiChevronLeft,
-  FiMessageCircle, FiDatabase
+  FiMessageCircle, FiDatabase, FiHeart, FiSun, FiMoon
 } from "react-icons/fi";
 import { ColorModeContext } from "./ThemeContext";
 
 // Sidebar width constants
-const SIDEBAR_WIDTH = 240;
+const SIDEBAR_WIDTH = 280;
+const SIDEBAR_COLLAPSED_WIDTH = 80;
+
+// Pulse animation for active item
+const pulseAnimation = keyframes`
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+`;
+
+// Ripple animation for hover effect
+const rippleAnimation = keyframes`
+  0% { transform: scale(0); opacity: 1; }
+  100% { transform: scale(4); opacity: 0; }
+`;
 
 const Sidebar = styled(Box)(({ theme, open }) => ({
-  width: open ? SIDEBAR_WIDTH : 60,
-  transition: theme.transitions.create("width", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.enteringScreen,
+  width: open ? SIDEBAR_WIDTH : SIDEBAR_COLLAPSED_WIDTH,
+  transition: theme.transitions.create(["width", "transform"], {
+    easing: theme.transitions.easing.easeInOut,
+    duration: theme.transitions.duration.standard,
   }),
   overflowX: "hidden",
   height: "100vh",
-  backgroundColor: "#2a3042",  // Matching dark base color for sidebar
-  color: "#fff",
+  background: theme.palette.mode === 'dark'
+    ? 'linear-gradient(180deg, #6366f1 0%, #8b5cf6 100%)'
+    : 'linear-gradient(180deg, #6366f1 0%, #8b5cf6 100%)',
   position: "fixed",
   top: 0,
   left: 0,
   zIndex: 1100,
   display: "flex",
   flexDirection: "column",
-  paddingTop: theme.spacing(2),
-  borderRight: "2px solid #5b5196",  // Added subtle border
+  boxShadow: 'none',
+  borderRight: 'none',
+  '&::before': {
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    opacity: 0.1,
+    zIndex: -1,
+  }
 }));
 
-const LayoutContent = styled(Box)(({ theme, open }) => ({
-  marginLeft: open ? SIDEBAR_WIDTH : 60,
-  transition: theme.transitions.create("margin", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.enteringScreen,
-  }),
-  padding: theme.spacing(4),
-  minHeight: "100vh",
-  backgroundColor: theme.palette.background.default,
-  flexGrow: 1, // Ensures the content fills the remaining space
+const StyledListItem = styled(ListItem)(({ theme, selected }) => ({
+  borderRadius: '12px',
+  margin: '4px 12px',
+  transition: 'all 0.3s ease',
+  position: 'relative',
+  overflow: 'hidden',
+  backgroundColor: selected 
+    ? 'rgba(255,255,255,0.15)'
+    : 'transparent',
+  '&:hover': {
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    transform: 'translateX(5px)',
+  },
+  ...(selected && {
+    '&::before': {
+      content: '""',
+      position: 'absolute',
+      left: 0,
+      top: '50%',
+      transform: 'translateY(-50%)',
+      width: '3px',
+      height: '50%',
+      background: '#fff',
+      borderRadius: '0 2px 2px 0',
+    }
+  })
 }));
 
-const features = [
-  { id: "dashboard", title: "Dashboard", icon: <FiMessageSquare />, route: "/dashboard" },
-  { id: "mood", title: "Mood Analysis", icon: <FiActivity />, route: "/dashboard/mood" },
-  { id: "journal", title: "Journal", icon: <FiBookOpen />, route: "/dashboard/journal" },
-  { id: "art-therapy", title: "Art Therapy", icon: <FiImage />, route: "/dashboard/art-therapy" },
-  { id: "quiz", title: "Quizzes", icon: <FiActivity />, route: "/dashboard/quiz" },
-  { id: "chatbot", title: "AI Chatbot", icon: <FiMessageCircle />, route: "/dashboard/chatbot" },
-  { id: "responses", title: "My Responses", icon: <FiDatabase />, route: "/dashboard/responses" },
-  { id: "report", title: "Report", icon: <FiBookOpen />, route: "/dashboard/report" },
-  { id: "settings", title: "Settings", icon: <FiSettings />, route: "/dashboard/settings" },
-];
+const IconWrapper = styled(Box)(({ theme, open }) => ({
+  width: '40px',
+  height: '40px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  borderRadius: '10px',
+  marginRight: open ? theme.spacing(2) : 0,
+  transition: 'all 0.3s ease',
+  '& svg': {
+    fontSize: '20px',
+    color: '#fff',
+    transition: 'all 0.3s ease',
+  },
+  '&:hover': {
+    '& svg': {
+      transform: 'scale(1.1)',
+    }
+  }
+}));
+
+const StyledListItemText = styled(ListItemText)(({ theme }) => ({
+  '& .MuiTypography-root': {
+    fontSize: '0.95rem',
+    fontWeight: 500,
+    color: '#fff',
+    transition: 'all 0.3s ease',
+  }
+}));
 
 const Layout = () => {
   const navigate = useNavigate();
@@ -73,92 +132,128 @@ const Layout = () => {
     navigate("/login");
   };
 
+  const features = [
+    { id: "home", title: "Home", icon: <FiMessageSquare />, route: "/home" },
+    { id: "mood", title: "Mood Analysis", icon: <FiActivity />, route: "/home/mood" },
+    { id: "journal", title: "Journal", icon: <FiBookOpen />, route: "/home/journal" },
+    { id: "art-therapy", title: "Art Therapy", icon: <FiImage />, route: "/home/art-therapy" },
+    { id: "quiz", title: "Quizzes", icon: <FiActivity />, route: "/home/quiz" },
+    { id: "chatbot", title: "AI Chatbot", icon: <FiMessageCircle />, route: "/home/chatbot" },
+    { id: "responses", title: "My Responses", icon: <FiDatabase />, route: "/home/responses" },
+    { id: "report", title: "Report", icon: <FiBookOpen />, route: "/home/report" },
+    // { id: "settings", title: "Settings", icon: <FiSettings />, route: "/home/settings" },
+  ];
+
   return (
     <Box sx={{ display: "flex", height: "100vh" }}>
-      {/* Sidebar */}
       <Sidebar open={sidebarOpen}>
-        <IconButton
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-          sx={{
-            color: "#fff",
-            alignSelf: sidebarOpen ? "flex-end" : "center",
-            mb: 2,
-            transition: "transform 0.3s",
-            "&:hover": { transform: "scale(1.1)" },
-          }}
-        >
-          {sidebarOpen ? <FiChevronLeft /> : <FiMenu />}
-        </IconButton>
-
-        <List>
-          {features.map((feature) => (
-            <ListItem
-              button
-              key={feature.id}
-              selected={location.pathname === feature.route}
-              onClick={() => navigate(feature.route)}
-              sx={{
-                borderRadius: "8px",
-                marginBottom: "8px",
-                backgroundColor: location.pathname === feature.route ? "#5b5196" : "transparent",
-                "&:hover": { backgroundColor: "#5b5196" },
-                justifyContent: sidebarOpen ? "initial" : "center",
-                px: sidebarOpen ? 2 : 1,
-              }}
-            >
-              <ListItemIcon sx={{ color: "#fff", minWidth: 0, mr: sidebarOpen ? 2 : "auto", justifyContent: "center" }}>
-                {feature.icon}
-              </ListItemIcon>
-              {sidebarOpen && <ListItemText primary={feature.title} />}
-            </ListItem>
-          ))}
-        </List>
-      </Sidebar>
-
-      {/* Main content */}
-      <LayoutContent open={sidebarOpen}>
-        <AppBar position="static" sx={{ backgroundColor: "#fff", color: "#2a3042", boxShadow: "none" }}>
-          <Toolbar sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <Box sx={{ 
+          display: 'flex', 
+          justifyContent: sidebarOpen ? 'space-between' : 'center',
+          alignItems: 'center',
+          padding: '20px 16px',
+          mb: 2
+        }}>
+          {sidebarOpen && (
             <Typography
-              variant="h6"
+              variant="h5"
               sx={{
-                fontWeight: 700,
-                background: "linear-gradient(to right, #667eea, #764ba2)", // Gradient effect like the login page
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
+                color: '#fff',
+                fontWeight: 600,
               }}
             >
               MindfulAI
             </Typography>
-            <Tooltip title="Account">
-              <IconButton onClick={handleAvatarClick}>
-                <Avatar sx={{ bgcolor: "#2a3042" }}>U</Avatar>
-              </IconButton>
-            </Tooltip>
-            <Menu
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleMenuClose}
-              slotProps={{ paper: { sx: { mt: 1.5 } } }}
-            >
-              <MenuItem onClick={colorMode.toggleColorMode}>
-                <Switch checked={theme.palette.mode === "dark"} />
-                {theme.palette.mode === "dark" ? "Light Mode" : "Dark Mode"}
-              </MenuItem>
-              <Divider />
-              <MenuItem onClick={handleLogout}>
-                <FiLogOut size={20} style={{ marginRight: "8px" }} />
-                Logout
-              </MenuItem>
-            </Menu>
-          </Toolbar>
-        </AppBar>
-
-        {/* Route children here */}
-        <Box sx={{ mt: 3 }}>
-          <Outlet />
+          )}
+          <IconButton
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            sx={{
+              color: '#fff',
+              padding: '8px',
+              '&:hover': {
+                backgroundColor: 'rgba(255,255,255,0.1)',
+              },
+              transition: 'all 0.3s ease',
+            }}
+          >
+            {sidebarOpen ? <FiChevronLeft /> : <FiMenu />}
+          </IconButton>
         </Box>
-      </LayoutContent>
+
+        <List sx={{ 
+          flex: 1,
+          px: sidebarOpen ? 1 : 0,
+          '& .MuiListItem-root': {
+            px: sidebarOpen ? 2 : 1,
+            justifyContent: sidebarOpen ? 'flex-start' : 'center',
+          }
+        }}>
+          {features.map((feature) => (
+            <StyledListItem
+              button
+              key={feature.id}
+              selected={location.pathname === feature.route}
+              onClick={() => navigate(feature.route)}
+            >
+              <IconWrapper open={sidebarOpen}>
+                {feature.icon}
+              </IconWrapper>
+              {sidebarOpen && (
+                <StyledListItemText primary={feature.title} />
+              )}
+            </StyledListItem>
+          ))}
+        </List>
+
+        <Box sx={{ 
+          padding: '16px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: sidebarOpen ? 'space-between' : 'center',
+          flexDirection: sidebarOpen ? 'row' : 'column',
+          gap: sidebarOpen ? 0 : 2
+        }}>
+          <IconButton
+            onClick={colorMode.toggleColorMode}
+            sx={{
+              color: '#fff',
+              '&:hover': {
+                backgroundColor: 'rgba(255,255,255,0.1)',
+              }
+            }}
+          >
+            {theme.palette.mode === 'dark' ? <FiSun /> : <FiMoon />}
+          </IconButton>
+          
+          <IconButton
+            onClick={handleLogout}
+            sx={{
+              color: '#fff',
+              '&:hover': {
+                backgroundColor: 'rgba(255,255,255,0.1)',
+              }
+            }}
+          >
+            <FiLogOut />
+          </IconButton>
+        </Box>
+      </Sidebar>
+
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          marginLeft: `${sidebarOpen ? SIDEBAR_WIDTH : SIDEBAR_COLLAPSED_WIDTH}px`,
+          transition: theme.transitions.create('margin', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen,
+          }),
+          minHeight: '100vh',
+          backgroundColor: theme.palette.background.default,
+        }}
+      >
+        <Outlet />
+      </Box>
     </Box>
   );
 };

@@ -31,7 +31,7 @@ function App() {
         <Route path="/" element={<Navigate to="/intro" />} />
 
         {/* Protected routes - all sidebar-layout routes go here */}
-        <Route path="/dashboard" element={
+        <Route path="/home" element={
           isAuthenticated() ? <Layout /> : <Navigate to="/login" />
         }>
           <Route index element={<Home />} />

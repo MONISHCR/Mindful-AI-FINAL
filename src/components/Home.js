@@ -84,7 +84,7 @@ const Home = () => {
             <FeatureButton 
               variant="contained" 
               startIcon={<MusicNoteIcon />}
-              onClick={() => navigate('/music')}
+              onClick={() => navigate('/home/music')}
               sx={{ backgroundColor: '#1DB954', '&:hover': { backgroundColor: '#1ed760' } }}
             >
               Music Therapy

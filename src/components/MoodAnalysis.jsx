@@ -984,7 +984,7 @@ const MoodAnalysis = () => {
 
                     {/* <ActionButton
                       variant="outlined"
-                      onClick={() => navigate('/dashboard/responses')}
+                      onClick={() => navigate('/home/responses')}
                       sx={{ minWidth: 200 }}
                     >
                       View All Responses

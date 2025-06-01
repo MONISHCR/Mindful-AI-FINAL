@@ -75,13 +75,14 @@ const JournalGrid = styled(Box)(({ theme }) => ({
   marginBottom: theme.spacing(6),
 }));
 
-const JournalCard = styled(Card)(() => ({
+const JournalCard = styled(Card)(({ theme }) => ({
   height: '100%',
   borderRadius: '16px',
   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
   position: 'relative',
   overflow: 'hidden',
   boxShadow: '0 8px 20px rgba(0, 0, 0, 0.1)',
+  cursor: 'pointer',
   '&:hover': {
     transform: 'translateY(-8px)',
     boxShadow: '0 16px 30px rgba(0, 0, 0, 0.15)',
@@ -299,6 +300,7 @@ const JournalComponent = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const [favoriteEntries, setFavoriteEntries] = useState([]);
+
   useEffect(() => {
     const fetchJournalEntries = async () => {
       try {
@@ -314,24 +316,37 @@ const JournalComponent = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        // Format the entries with proper dates
-        const formattedEntries = response.data.map(entry => ({
-          ...entry,
-          formattedDate: new Date(entry.createdAt || Date.now()).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric'
-          }),
-          formattedTime: new Date(entry.createdAt || Date.now()).toLocaleTimeString('en-US', {
-            hour: '2-digit',
-            minute: '2-digit'
-          })
-        }));
+        // Validate and format the entries with proper dates
+        const formattedEntries = (response.data || []).map(entry => {
+          if (!entry) return null;
+          
+          try {
+            const date = new Date(entry.createdAt || Date.now());
+            return {
+              ...entry,
+              _id: entry._id || Date.now().toString(), // Fallback ID if none exists
+              content: entry.content || '',
+              formattedDate: date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+              }),
+              formattedTime: date.toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit'
+              })
+            };
+          } catch (err) {
+            console.error("Error formatting entry:", err);
+            return null;
+          }
+        }).filter(entry => entry !== null); // Remove any invalid entries
 
         setJournalEntries(formattedEntries);
       } catch (error) {
         console.error("Error fetching journal entries", error);
         setError(error.message || "Failed to load journal entries");
+        setJournalEntries([]); // Reset to empty array on error
       } finally {
         setLoading(false);
       }
@@ -349,8 +364,6 @@ const JournalComponent = () => {
       alert(`Character limit of ${CHAR_LIMIT} exceeded!`);
     }
   };
-
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -455,17 +468,36 @@ const JournalComponent = () => {
     });
   };
 
-  const handleCardClick = (entry) => {
-    setSelectedEntry(entry);
-    setOpenModal(true);
+  const handleCardClick = (entry, event) => {
+    // Prevent click event if clicking on action buttons
+    if (event.target.closest('.MuiIconButton-root')) {
+      return;
+    }
+
+    if (!entry || !entry._id) {
+      console.error('Invalid entry:', entry);
+      return;
+    }
+
+    try {
+      setSelectedEntry({
+        _id: entry._id,
+        content: entry.content || '',
+        createdAt: entry.createdAt || Date.now(),
+        formattedDate: entry.formattedDate,
+        formattedTime: entry.formattedTime
+      });
+      setOpenModal(true);
+    } catch (error) {
+      console.error('Error setting selected entry:', error);
+      setError('Failed to open journal entry');
+    }
   };
 
   const handleCloseModal = () => {
     setOpenModal(false);
     setSelectedEntry(null);
   };
-
-
 
   return (
     <JournalContainer>
@@ -509,7 +541,7 @@ const JournalComponent = () => {
         <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
           <CircularProgress size={60} thickness={4} />
         </Box>
-      ) : journalEntries.length === 0 ? (
+      ) : !Array.isArray(journalEntries) || journalEntries.length === 0 ? (
         <EmptyState>
           <Box sx={{ mb: 3, opacity: 0.7 }}>
             <Lottie
@@ -527,44 +559,60 @@ const JournalComponent = () => {
       ) : (
         <JournalGrid>
           {journalEntries.slice().reverse().map((entry, index) => (
-            <Zoom in={true} key={entry._id} style={{ transitionDelay: `${index * 50}ms` }}>
-              <JournalCard onClick={() => handleCardClick(entry)}>
-                <CardActions>
-                  <Tooltip title="Favorite">
-                    <ActionIconButton onClick={(e) => toggleFavorite(entry._id, e)}>
-                      {favoriteEntries.includes(entry._id) ?
-                        <Favorite fontSize="small" color="error" /> :
-                        <FavoriteBorder fontSize="small" />
-                      }
-                    </ActionIconButton>
-                  </Tooltip>
-                  <Tooltip title="Delete">
-                    <ActionIconButton onClick={(e) => handleDelete(entry._id, e)}>
-                      <Delete fontSize="small" color="error" />
-                    </ActionIconButton>
-                  </Tooltip>
-                </CardActions>
+            entry && entry._id ? (
+              <Zoom in={true} key={entry._id} style={{ transitionDelay: `${index * 50}ms` }}>
+                <JournalCard 
+                  onClick={(e) => handleCardClick(entry, e)}
+                  component={Paper}
+                  elevation={3}
+                >
+                  <CardActions className="card-actions">
+                    <Tooltip title="Favorite">
+                      <ActionIconButton 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleFavorite(entry._id, e);
+                        }}
+                      >
+                        {favoriteEntries.includes(entry._id) ?
+                          <Favorite fontSize="small" color="error" /> :
+                          <FavoriteBorder fontSize="small" />
+                        }
+                      </ActionIconButton>
+                    </Tooltip>
+                    <Tooltip title="Delete">
+                      <ActionIconButton 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDelete(entry._id, e);
+                        }}
+                      >
+                        <Delete fontSize="small" color="error" />
+                      </ActionIconButton>
+                    </Tooltip>
+                  </CardActions>
 
-                <CardContent sx={{ p: 3 }}>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                    <Typography variant="h6" fontWeight={600}>
-                      Entry {journalEntries.length - index}
-                    </Typography>
-                  </Box>
+                  <CardContent sx={{ p: 3 }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                      <Typography variant="h6" fontWeight={600}>
+                        Entry {journalEntries.length - index}
+                      </Typography>
+                    </Box>
 
-                  <CardDate>
-                    <CalendarToday fontSize="small" />
-                    {entry.formattedDate} • <AccessTime fontSize="small" /> {entry.formattedTime}
-                  </CardDate>
+                    <CardDate>
+                      <CalendarToday fontSize="small" />
+                      {entry.formattedDate} • <AccessTime fontSize="small" /> {entry.formattedTime}
+                    </CardDate>
 
-                  <Divider sx={{ my: 1.5 }} />
+                    <Divider sx={{ my: 1.5 }} />
 
-                  <CardPreview>
-                    {entry.content}
-                  </CardPreview>
-                </CardContent>
-              </JournalCard>
-            </Zoom>
+                    <CardPreview>
+                      {entry.content}
+                    </CardPreview>
+                  </CardContent>
+                </JournalCard>
+              </Zoom>
+            ) : null
           ))}
         </JournalGrid>
       )}
@@ -632,9 +680,9 @@ const JournalComponent = () => {
             </IconButton>
 
             <ModalTitle>
-              {selectedEntry &&
-                `Journal Entry - ${new Date(selectedEntry.createdAt || Date.now()).toLocaleDateString()}`
-              }
+              {selectedEntry && selectedEntry.formattedDate && (
+                `Journal Entry - ${selectedEntry.formattedDate}`
+              )}
             </ModalTitle>
 
             <ModalText>
@@ -646,7 +694,7 @@ const JournalComponent = () => {
                 variant="outlined"
                 startIcon={<ContentCopy />}
                 onClick={() => {
-                  if (selectedEntry) {
+                  if (selectedEntry && selectedEntry.content) {
                     navigator.clipboard.writeText(selectedEntry.content);
                     alert("Content copied to clipboard!");
                   }

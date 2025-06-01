@@ -10,7 +10,11 @@ import {
   Fade,
   Tooltip,
   Zoom,
-  Button
+  Button,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemIcon
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import MicIcon from '@mui/icons-material/Mic';
@@ -23,6 +27,7 @@ import PsychologyIcon from '@mui/icons-material/Psychology';
 import MedicationIcon from '@mui/icons-material/Medication';
 import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
+import CircleIcon from '@mui/icons-material/Circle';
 import { styled } from '@mui/system';
 
 // --- Web Speech API Setup ---
@@ -56,7 +61,9 @@ const ChatRoot = styled(Box)(({ theme }) => ({
   height: '100vh',
   display: 'flex',
   flexDirection: 'column',
-  background: 'linear-gradient(135deg, #f0f8ff 0%, #e6f4ff 50%, #f5f9ff 100%)',
+  background: theme.palette.mode === 'dark' 
+    ? 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #1a1a2e 100%)'
+    : 'linear-gradient(135deg, #f0f8ff 0%, #e6f4ff 50%, #f5f9ff 100%)',
   backgroundSize: 'cover',
   backgroundAttachment: 'fixed',
   position: 'relative',
@@ -68,7 +75,9 @@ const ChatRoot = styled(Box)(({ theme }) => ({
     left: 0,
     right: 0,
     bottom: 0,
-    background: 'url("data:image/svg+xml,%3Csvg width=\'100\' height=\'100\' viewBox=\'0 0 100 100\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3z\' fill=\'%239C92AC\' fill-opacity=\'0.05\' fill-rule=\'evenodd\'/%3E%3C/svg%3E")',
+    background: theme.palette.mode === 'dark'
+      ? 'url("data:image/svg+xml,%3Csvg width=\'100\' height=\'100\' viewBox=\'0 0 100 100\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3z\' fill=\'%23ffffff\' fill-opacity=\'0.05\' fill-rule=\'evenodd\'/%3E%3C/svg%3E")'
+      : 'url("data:image/svg+xml,%3Csvg width=\'100\' height=\'100\' viewBox=\'0 0 100 100\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3z\' fill=\'%239C92AC\' fill-opacity=\'0.05\' fill-rule=\'evenodd\'/%3E%3C/svg%3E")',
     opacity: 0.6,
     zIndex: 0,
   },
@@ -111,15 +120,21 @@ const ChatContainer = styled(Paper)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   borderRadius: 30,
-  boxShadow: '0 10px 45px rgba(86, 137, 245, 0.15), 0 1px 2px rgba(0,0,0,0.05)',
+  boxShadow: theme.palette.mode === 'dark' 
+    ? '0 10px 45px rgba(0, 0, 0, 0.3)'
+    : '0 10px 45px rgba(86, 137, 245, 0.15)',
   overflow: 'hidden',
-  background: 'rgba(255,255,255,0.97)',
+  background: theme.palette.mode === 'dark'
+    ? 'rgba(26, 32, 44, 0.95)'
+    : 'rgba(255, 255, 255, 0.97)',
   backdropFilter: 'blur(15px)',
   position: 'relative',
-  border: '1px solid rgba(255, 255, 255, 0.9)',
+  border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.9)'}`,
   transition: 'box-shadow 0.3s ease-in-out',
   '&:hover': {
-    boxShadow: '0 15px 55px rgba(86, 137, 245, 0.18), 0 2px 5px rgba(0,0,0,0.08)',
+    boxShadow: theme.palette.mode === 'dark'
+      ? '0 15px 55px rgba(0, 0, 0, 0.4)'
+      : '0 15px 55px rgba(86, 137, 245, 0.18)'
   }
 }));
 
@@ -253,64 +268,112 @@ const BubbleAvatar = styled(Avatar)(({ theme, isUser }) => ({
   }
 }));
 
+// Add formatting utility function
+const formatMessage = (text) => {
+  if (!text) return text;
+
+  // Split into paragraphs
+  return text.split('\n').map((paragraph, index) => {
+    // Handle bullet points
+    if (paragraph.trim().startsWith('*')) {
+      const bulletContent = paragraph.trim().replace(/^\*\s*/, '');
+      
+      // Handle bold text within bullets
+      const boldPattern = /\*\*(.*?)\*\*/g;
+      const italicPattern = /\*(.*?)\*/g;
+      
+      let formattedContent = bulletContent
+        .replace(boldPattern, '<strong>$1</strong>')
+        .replace(italicPattern, '<em>$1</em>');
+
+      return (
+        <ListItem key={index} sx={{ 
+          py: 0.5, 
+          pl: 0,
+          '& .MuiListItemIcon-root': {
+            minWidth: '24px',
+            color: 'inherit',
+            opacity: 0.7
+          }
+        }}>
+          <ListItemIcon>
+            <CircleIcon sx={{ fontSize: 8 }} />
+          </ListItemIcon>
+          <ListItemText 
+            primary={
+              <Typography 
+                component="span" 
+                dangerouslySetInnerHTML={{ __html: formattedContent }}
+              />
+            }
+          />
+        </ListItem>
+      );
+    }
+    
+    // Handle regular paragraphs with bold and italic
+    const boldPattern = /\*\*(.*?)\*\*/g;
+    const italicPattern = /\*(.*?)\*/g;
+    
+    let formattedContent = paragraph
+      .replace(boldPattern, '<strong>$1</strong>')
+      .replace(italicPattern, '<em>$1</em>');
+
+    return (
+      <Typography 
+        key={index} 
+        variant="body1" 
+        paragraph 
+        dangerouslySetInnerHTML={{ __html: formattedContent }}
+      />
+    );
+  });
+};
+
+// Update the Bubble styled component
 const Bubble = styled(Paper)(({ theme, owner }) => ({
   maxWidth: '70%',
   minWidth: '40px',
   background: owner === 'user'
-    ? 'linear-gradient(135deg, #7F7FD5 0%, #86A8E7 100%)'
-    : 'linear-gradient(135deg, #E0EAFC 0%, #CFDEF3 100%)',
-  color: owner === 'user' ? '#fff' : '#333',
+    ? theme.palette.mode === 'dark'
+      ? 'linear-gradient(135deg, #4B6CB7 0%, #182848 100%)'
+      : 'linear-gradient(135deg, #7F7FD5 0%, #86A8E7 100%)'
+    : theme.palette.mode === 'dark'
+      ? 'linear-gradient(135deg, #2C3E50 0%, #1a1a2e 100%)'
+      : 'linear-gradient(135deg, #E0EAFC 0%, #CFDEF3 100%)',
+  color: owner === 'user' 
+    ? '#fff' 
+    : theme.palette.mode === 'dark' ? '#fff' : '#333',
   borderRadius: owner === 'user' ? '20px 20px 4px 20px' : '20px 20px 20px 4px',
   padding: theme.spacing(2, 3),
-  boxShadow: '0 2px 8px rgba(0,0,0,0.07)',
+  boxShadow: theme.palette.mode === 'dark'
+    ? '0 2px 8px rgba(0,0,0,0.2)'
+    : '0 2px 8px rgba(0,0,0,0.07)',
   position: 'relative',
   transition: 'all 0.3s',
-  '&:hover': {
-    transform: 'translateY(-2px)',
-    boxShadow: '0 4px 12px rgba(0,0,0,0.12)',
+  '& .MuiTypography-root': {
+    marginBottom: theme.spacing(1),
+    '&:last-child': {
+      marginBottom: 0
+    }
   },
-  // Add subtle light effect
-  '&::before': owner === 'user' ? {
-    content: '""',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    background: 'linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 50%)',
-    borderRadius: 'inherit',
-    pointerEvents: 'none',
-  } : {},
-  // Add typing animation for the bot messages
-  '& .typing-animation': {
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: '5px',
-    height: '20px',
-    '& .dot': {
-      width: '6px',
-      height: '6px',
-      backgroundColor: '#7F7FD5',
-      borderRadius: '50%',
-      animation: 'typingAnimation 1.4s infinite',
-      '&:nth-of-type(2)': {
-        animationDelay: '0.2s',
-      },
-      '&:nth-of-type(3)': {
-        animationDelay: '0.4s',
-      },
-    },
+  '& .MuiList-root': {
+    padding: 0,
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1)
   },
-  '@keyframes typingAnimation': {
-    '0%, 100%': {
-      transform: 'translateY(0)',
-      opacity: 0.5,
-    },
-    '50%': {
-      transform: 'translateY(-5px)',
-      opacity: 1,
-    },
+  '& strong': {
+    color: theme.palette.mode === 'dark'
+      ? theme.palette.primary.light
+      : theme.palette.primary.main,
+    fontWeight: 600
   },
+  '& em': {
+    color: theme.palette.mode === 'dark'
+      ? theme.palette.secondary.light
+      : theme.palette.secondary.main,
+    fontStyle: 'italic'
+  }
 }));
 
 const QuickReplies = styled(Box)(({ theme }) => ({
@@ -318,8 +381,10 @@ const QuickReplies = styled(Box)(({ theme }) => ({
   flexWrap: 'wrap',
   gap: theme.spacing(1),
   padding: theme.spacing(2, 4),
-  borderTop: '1px solid rgba(0,0,0,0.08)',
-  background: 'linear-gradient(to bottom, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.9) 100%)',
+  borderTop: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)'}`,
+  background: theme.palette.mode === 'dark'
+    ? 'linear-gradient(to bottom, rgba(26, 32, 44, 0.8) 0%, rgba(26, 32, 44, 0.95) 100%)'
+    : 'linear-gradient(to bottom, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.9) 100%)',
   position: 'relative',
   overflow: 'hidden',
   '&::before': {
@@ -343,18 +408,24 @@ const QuickReplies = styled(Box)(({ theme }) => ({
 const QuickReplyButton = styled(Button)(({ theme }) => ({
   borderRadius: '20px',
   padding: theme.spacing(1, 2),
-  backgroundColor: 'rgba(127, 127, 213, 0.1)',
-  color: '#7F7FD5',
+  backgroundColor: theme.palette.mode === 'dark'
+    ? 'rgba(127, 127, 213, 0.15)'
+    : 'rgba(127, 127, 213, 0.1)',
+  color: theme.palette.mode === 'dark'
+    ? theme.palette.primary.light
+    : theme.palette.primary.main,
   textTransform: 'none',
   fontWeight: 'normal',
   fontSize: '0.9rem',
-  boxShadow: '0 2px 5px rgba(0,0,0,0.03)',
-  transition: 'all 0.3s ease',
-  border: '1px solid rgba(127, 127, 213, 0.2)',
+  boxShadow: theme.palette.mode === 'dark'
+    ? '0 2px 5px rgba(0,0,0,0.2)'
+    : '0 2px 5px rgba(0,0,0,0.03)',
+  border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(127, 127, 213, 0.3)' : 'rgba(127, 127, 213, 0.2)'}`,
   '&:hover': {
-    backgroundColor: 'rgba(127, 127, 213, 0.2)',
+    backgroundColor: theme.palette.mode === 'dark'
+      ? 'rgba(127, 127, 213, 0.25)'
+      : 'rgba(127, 127, 213, 0.2)',
     transform: 'translateY(-2px)',
-    boxShadow: '0 4px 8px rgba(0,0,0,0.07)',
   },
   '&:active': {
     transform: 'translateY(1px)',
@@ -369,14 +440,17 @@ const InputBar = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   gap: theme.spacing(2),
   padding: theme.spacing(3, 4),
-  background: 'rgba(255,255,255,0.85)',
-  borderTop: '1px solid rgba(0,0,0,0.05)',
+  background: theme.palette.mode === 'dark'
+    ? 'rgba(26, 32, 44, 0.95)'
+    : 'rgba(255,255,255,0.85)',
+  borderTop: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'}`,
   backdropFilter: 'blur(10px)',
   position: 'relative',
   transition: 'all 0.3s ease',
   '&:focus-within': {
-    background: 'rgba(255,255,255,0.95)',
-    boxShadow: 'inset 0 2px 10px rgba(0,0,0,0.02)',
+    background: theme.palette.mode === 'dark'
+      ? 'rgba(26, 32, 44, 1)'
+      : 'rgba(255,255,255,0.95)',
   },
   '@media (max-width: 600px)': {
     padding: theme.spacing(2, 2),
@@ -430,23 +504,31 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
   flex: 1,
   '& .MuiOutlinedInput-root': {
     borderRadius: 25,
-    backgroundColor: '#FFF',
+    backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.05)' : '#FFF',
     transition: 'all 0.3s',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+    boxShadow: theme.palette.mode === 'dark'
+      ? '0 2px 8px rgba(0,0,0,0.2)'
+      : '0 2px 8px rgba(0,0,0,0.05)',
     '&:hover': {
-      boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
-    },
-    '&.Mui-focused': {
-      boxShadow: '0 4px 15px rgba(127, 127, 213, 0.25)',
+      boxShadow: theme.palette.mode === 'dark'
+        ? '0 4px 12px rgba(0,0,0,0.3)'
+        : '0 4px 12px rgba(0,0,0,0.08)',
     },
     '& .MuiOutlinedInput-notchedOutline': {
-      borderColor: 'rgba(0,0,0,0.1)',
+      borderColor: theme.palette.mode === 'dark'
+        ? 'rgba(255,255,255,0.2)'
+        : 'rgba(0,0,0,0.1)',
     },
     '&:hover .MuiOutlinedInput-notchedOutline': {
-      borderColor: 'rgba(127, 127, 213, 0.3)',
+      borderColor: theme.palette.mode === 'dark'
+        ? 'rgba(127, 127, 213, 0.5)'
+        : 'rgba(127, 127, 213, 0.3)',
     },
-    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-      borderColor: 'rgba(127, 127, 213, 0.5)',
+    '& input': {
+      color: theme.palette.mode === 'dark' ? '#fff' : 'inherit',
+    },
+    '& input::placeholder': {
+      color: theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.5)' : 'inherit',
     }
   }
 }));
@@ -499,43 +581,36 @@ const ActionButton = styled(IconButton)(({ theme, color, active }) => ({
 const TherapyTip = styled(Paper)(({ theme }) => ({
   margin: theme.spacing(2, 0),
   padding: theme.spacing(2.5, 3),
-  background: 'linear-gradient(135deg, rgba(145, 234, 228, 0.15) 0%, rgba(127, 127, 213, 0.15) 100%)',
+  background: theme.palette.mode === 'dark'
+    ? 'linear-gradient(135deg, rgba(75, 108, 183, 0.15) 0%, rgba(24, 40, 72, 0.15) 100%)'
+    : 'linear-gradient(135deg, rgba(145, 234, 228, 0.15) 0%, rgba(127, 127, 213, 0.15) 100%)',
   borderRadius: 16,
   display: 'flex',
   alignItems: 'center',
   gap: theme.spacing(2),
   alignSelf: 'center',
   maxWidth: '80%',
-  boxShadow: '0 3px 12px rgba(0,0,0,0.04)',
-  border: '1px solid rgba(255,255,255,0.6)',
+  boxShadow: theme.palette.mode === 'dark'
+    ? '0 3px 12px rgba(0,0,0,0.2)'
+    : '0 3px 12px rgba(0,0,0,0.04)',
+  border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.6)'}`,
   backdropFilter: 'blur(8px)',
-  transition: 'all 0.3s ease',
-  '&:hover': {
-    transform: 'translateY(-2px)',
-    boxShadow: '0 6px 16px rgba(0,0,0,0.06)',
-  },
+  color: theme.palette.mode === 'dark' ? '#fff' : 'inherit',
   '& svg': {
-    color: '#7F7FD5',
-    fontSize: '1.5rem',
-    animation: 'pulse 2s infinite',
-  },
-  '@keyframes pulse': {
-    '0%': {
-      transform: 'scale(1)',
-    },
-    '50%': {
-      transform: 'scale(1.1)',
-    },
-    '100%': {
-      transform: 'scale(1)',
-    },
-  },
+    color: theme.palette.mode === 'dark'
+      ? theme.palette.primary.light
+      : theme.palette.primary.main
+  }
 }));
 
 const ErrorMsg = styled(Box)(({ theme }) => ({
   color: '#d32f2f',
-  background: 'rgba(248, 215, 218, 0.9)',
-  border: '1px solid rgba(245, 198, 203, 0.5)',
+  background: theme.palette.mode === 'dark' 
+    ? 'rgba(255, 107, 107, 0.15)'
+    : 'rgba(248, 215, 218, 0.9)',
+  border: theme.palette.mode === 'dark'
+    ? '1px solid rgba(255, 107, 107, 0.3)'
+    : '1px solid rgba(245, 198, 203, 0.5)',
   borderRadius: 12,
   padding: theme.spacing(1, 2),
   margin: theme.spacing(0, 4, 2, 4),
@@ -545,7 +620,9 @@ const ErrorMsg = styled(Box)(({ theme }) => ({
   justifyContent: 'center',
   gap: theme.spacing(1),
   fontSize: '0.9rem',
-  boxShadow: '0 2px 5px rgba(0,0,0,0.05)',
+  boxShadow: theme.palette.mode === 'dark'
+    ? '0 2px 5px rgba(0,0,0,0.2)'
+    : '0 2px 5px rgba(0,0,0,0.05)',
 }));
 
 // Mental health quick reply suggestions
@@ -1184,9 +1261,7 @@ function Chatbot() {
                             marginRight: group.owner === 'user' && msgIndex > 0 ? '34px' : 0,
                           }}
                         >
-                          <Typography variant="body1" sx={{ whiteSpace: 'pre-line' }}>
-                            {text}
-                          </Typography>
+                          {formatMessage(text)}
                         </Bubble>
                         {group.owner === 'user' && msgIndex === 0 && (
                           <BubbleAvatar isUser>

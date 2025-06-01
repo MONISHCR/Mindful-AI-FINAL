@@ -224,13 +224,38 @@ const ArtTherapy = () => {
   const [imageUrl, setImageUrl] = useState(null);
   const [loading, setLoading] = useState(false);
   const [selectedMood, setSelectedMood] = useState(null);
+  const [error, setError] = useState(null);
   const maxWords = 300;
 
   const moods = [
-    { icon: <SentimentSatisfiedAltIcon />, tooltip: "Happy", color: "#4CAF50" },
-    { icon: <MoodIcon />, tooltip: "Calm", color: "#2196F3" },
-    { icon: <AutoAwesomeIcon />, tooltip: "Inspired", color: "#9C27B0" },
-    { icon: <BrushIcon />, tooltip: "Creative", color: "#FF9800" }
+    { 
+      icon: <SentimentSatisfiedAltIcon />, 
+      tooltip: "Happy", 
+      color: "#4CAF50",
+      promptPrefix: "Create a vibrant and uplifting artwork expressing joy and positivity",
+      style: "bright and cheerful"
+    },
+    { 
+      icon: <MoodIcon />, 
+      tooltip: "Calm", 
+      color: "#2196F3",
+      promptPrefix: "Generate a serene and peaceful artwork conveying tranquility",
+      style: "soft and soothing"
+    },
+    { 
+      icon: <AutoAwesomeIcon />, 
+      tooltip: "Inspired", 
+      color: "#9C27B0",
+      promptPrefix: "Design an imaginative and dynamic artwork showing inspiration",
+      style: "ethereal and dynamic"
+    },
+    { 
+      icon: <BrushIcon />, 
+      tooltip: "Creative", 
+      color: "#FF9800",
+      promptPrefix: "Create an artistic and expressive artwork demonstrating creativity",
+      style: "abstract and innovative"
+    }
   ];
 
   const handleChange = (event) => {
@@ -242,16 +267,37 @@ const ArtTherapy = () => {
 
   const handleSubmit = async () => {
     setLoading(true);
+    setError(null);
     try {
-      // // Enhance prompt with mood if selected
-      // const prompt = selectedMood 
-      //   ? `${text} (Mood: ${moods[selectedMood].tooltip})` 
-      //   : text;
+      // Enhanced prompt generation with mood context
+      let prompt = text;
+      
+      if (selectedMood !== null) {
+        const mood = moods[selectedMood];
+        prompt = `${mood.promptPrefix}. 
+                 Style: ${mood.style}. 
+                 Emotional context: ${mood.tooltip}. 
+                 User's expression: ${text}`;
+      }
         
-      const response = await axios.post("/generate", { text: text });
-      setImageUrl(response.data.image_url);
+      const response = await axios.post("/generate", { 
+        text: prompt,
+        mood: selectedMood !== null ? {
+          name: moods[selectedMood].tooltip,
+          style: moods[selectedMood].style,
+          context: moods[selectedMood].promptPrefix
+        } : null
+      });
+      
+      if (response.data && response.data.image_url) {
+        setImageUrl(response.data.image_url);
+      } else {
+        throw new Error("No image URL received from server");
+      }
     } catch (error) {
       console.error("Error generating image:", error);
+      setImageUrl(null);
+      setError(error.message || "Failed to generate image. Please try again.");
     }
     setLoading(false);
   };
@@ -412,12 +458,26 @@ const ArtTherapy = () => {
                         Creating your artwork...
                       </Typography>
                       <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
-                        This may take a moment while we craft something special
+                        This may take a moment while we craft something special for your {selectedMood !== null ? moods[selectedMood].tooltip.toLowerCase() : ''} expression
                       </Typography>
                     </Box>
                   </LoadingOverlay>
-        </Box>
-      )}
+                </Box>
+              )}
+
+              {error && (
+                <Box sx={{
+                  p: 2,
+                  mt: 2,
+                  backgroundColor: 'rgba(244, 67, 54, 0.1)',
+                  borderRadius: 2,
+                  border: '1px solid rgba(244, 67, 54, 0.3)'
+                }}>
+                  <Typography color="error" variant="body2">
+                    {error}
+                  </Typography>
+                </Box>
+              )}
             </ResultSection>
           </Content>
         </TherapyContainer>

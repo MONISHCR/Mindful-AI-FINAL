@@ -50,7 +50,8 @@ const TherapyRoot = styled(Box)(({ theme }) => ({
   minHeight: '100vh',
   display: 'flex',
   flexDirection: 'column',
-  backgroundColor: '#f9f9f9',
+  backgroundColor: '#f0f2f5',
+  backgroundImage: 'linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%)',
   color: '#333',
   overflow: 'hidden',
   position: 'relative',
@@ -58,12 +59,14 @@ const TherapyRoot = styled(Box)(({ theme }) => ({
 
 const Header = styled(Box)(({ theme }) => ({
   padding: theme.spacing(2, 3),
-  background: 'linear-gradient(90deg, #7F7FD5, #91EAE4)',
-  color: 'white',
+  background: 'rgba(255, 255, 255, 0.1)',
+  backdropFilter: 'blur(10px)',
+  color: '#1a237e',
   display: 'flex',
   alignItems: 'center',
   gap: theme.spacing(2),
-  boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+  boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+  borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
 }));
 
 const HeaderAvatar = styled(Avatar)(({ theme }) => ({
@@ -75,10 +78,23 @@ const HeaderAvatar = styled(Avatar)(({ theme }) => ({
 
 const MainContent = styled(Container)(({ theme }) => ({
   flex: 1,
-  padding: theme.spacing(3),
+  padding: theme.spacing(4),
   [theme.breakpoints.down('sm')]: {
     padding: theme.spacing(2),
-    paddingBottom: theme.spacing(10), // Space for player bar
+    paddingBottom: theme.spacing(10),
+  },
+  '& > *': {
+    animation: 'fadeIn 0.5s ease-out',
+  },
+  '@keyframes fadeIn': {
+    from: {
+      opacity: 0,
+      transform: 'translateY(20px)',
+    },
+    to: {
+      opacity: 1,
+      transform: 'translateY(0)',
+    },
   },
 }));
 
@@ -89,16 +105,19 @@ const TabsContainer = styled(Box)(({ theme }) => ({
 }));
 
 const TabItem = styled(Button)(({ theme, active }) => ({
-  padding: theme.spacing(1.5, 2),
+  padding: theme.spacing(2, 3),
   fontWeight: active ? 600 : 400,
   color: active ? '#7F7FD5' : '#757575',
-  borderBottom: active ? '2px solid #7F7FD5' : 'none',
-  borderRadius: 0,
+  borderBottom: active ? '3px solid #7F7FD5' : 'none',
+  borderRadius: '12px 12px 0 0',
   textTransform: 'none',
+  fontSize: '1rem',
+  backgroundColor: active ? 'rgba(127,127,213,0.1)' : 'transparent',
   '&:hover': {
-    backgroundColor: 'rgba(127, 127, 213, 0.08)',
+    backgroundColor: 'rgba(127,127,213,0.05)',
+    transform: 'translateY(-2px)',
   },
-  transition: 'all 0.2s',
+  transition: 'all 0.2s ease',
 }));
 
 const MoodGrid = styled(Grid)(({ theme }) => ({
@@ -107,59 +126,91 @@ const MoodGrid = styled(Grid)(({ theme }) => ({
 }));
 
 const MoodCard = styled(Paper)(({ theme, color }) => ({
-  padding: theme.spacing(2),
-  borderRadius: 8,
-  backgroundColor: 'white',
+  padding: theme.spacing(3),
+  borderRadius: 16,
+  backgroundColor: 'rgba(255, 255, 255, 0.9)',
   cursor: 'pointer',
-  transition: 'all 0.2s ease',
+  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'center',
-  minHeight: 100,
-  boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-  '&:hover': {
-    transform: 'translateY(-4px)',
-    boxShadow: '0 4px 12px rgba(0,0,0,0.12)',
+  minHeight: 120,
+  position: 'relative',
+  overflow: 'hidden',
+  '&:before': {
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: '4px',
+    background: color || '#7F7FD5',
+    transition: 'height 0.3s ease',
   },
-  borderLeft: `4px solid ${color || '#7F7FD5'}`,
+  '&:hover': {
+    transform: 'translateY(-8px)',
+    boxShadow: '0 12px 20px rgba(0,0,0,0.1)',
+    '&:before': {
+      height: '100%',
+      opacity: 0.1,
+    },
+  },
+  '& .MuiTypography-root': {
+    position: 'relative',
+    zIndex: 1,
+  }
 }));
 
 const StyledFormControl = styled(FormControl)(({ theme }) => ({
-  borderRadius: 8,
+  borderRadius: 12,
   marginBottom: theme.spacing(3),
   '& .MuiOutlinedInput-root': {
-    borderRadius: 8,
-    backgroundColor: 'white',
-    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+    borderRadius: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    backdropFilter: 'blur(10px)',
+    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+    '&.Mui-focused': {
+      transform: 'scale(1.02)',
+      boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+    },
+    '& fieldset': {
+      borderColor: 'rgba(0,0,0,0.1)',
+    },
+    '&:hover fieldset': {
       borderColor: '#7F7FD5',
     },
-  },
-  '& .MuiInputLabel-root.Mui-focused': {
-    color: '#7F7FD5',
+    '&.Mui-focused fieldset': {
+      borderColor: '#7F7FD5',
+    },
   },
 }));
 
 const SearchButton = styled(Button)(({ theme }) => ({
-  borderRadius: 8,
-  padding: theme.spacing(1.5, 3),
+  borderRadius: 12,
+  padding: theme.spacing(1.5, 4),
   fontWeight: 600,
   textTransform: 'none',
-  fontSize: '1rem',
-  backgroundColor: '#7F7FD5',
+  fontSize: '1.1rem',
+  background: 'linear-gradient(45deg, #7F7FD5 30%, #91EAE4 90%)',
   color: 'white',
+  boxShadow: '0 4px 20px rgba(127,127,213,0.3)',
   '&:hover': {
-    backgroundColor: '#6F6FC5',
+    background: 'linear-gradient(45deg, #6F6FC5 30%, #81DAD4 90%)',
+    transform: 'translateY(-2px)',
+    boxShadow: '0 6px 25px rgba(127,127,213,0.4)',
   },
+  transition: 'all 0.3s ease',
 }));
 
 const NowPlayingBar = styled(Box)(({ theme, active }) => ({
   display: 'flex',
   alignItems: 'center',
-  padding: theme.spacing(1.5, 3),
-  height: 80,
-  backgroundColor: 'white',
-  borderTop: '1px solid #e0e0e0',
+  padding: theme.spacing(2, 4),
+  height: 90,
+  backgroundColor: 'rgba(255, 255, 255, 0.95)',
+  backdropFilter: 'blur(10px)',
+  borderTop: '1px solid rgba(0,0,0,0.05)',
   width: '100%',
   position: 'fixed',
   bottom: 0,
@@ -167,12 +218,8 @@ const NowPlayingBar = styled(Box)(({ theme, active }) => ({
   right: 0,
   zIndex: 1000,
   transform: active ? 'translateY(0)' : 'translateY(100%)',
-  transition: 'transform 0.3s ease-in-out',
-  boxShadow: '0 -2px 10px rgba(0,0,0,0.05)',
-  [theme.breakpoints.down('sm')]: {
-    height: 70,
-    padding: theme.spacing(1, 2),
-  },
+  transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+  boxShadow: '0 -4px 30px rgba(0,0,0,0.05)',
 }));
 
 const SongInfo = styled(Box)(({ theme }) => ({
@@ -231,15 +278,14 @@ const AlbumArt = styled(Avatar)(({ theme }) => ({
 const PlayPauseButton = styled(IconButton)(({ theme }) => ({
   backgroundColor: '#7F7FD5',
   color: 'white',
+  width: 48,
+  height: 48,
+  transition: 'all 0.3s ease',
   '&:hover': {
     backgroundColor: '#6F6FC5',
+    transform: 'scale(1.1)',
   },
-  width: 40,
-  height: 40,
-  [theme.breakpoints.down('sm')]: {
-    width: 36,
-    height: 36,
-  },
+  boxShadow: '0 4px 15px rgba(127,127,213,0.3)',
 }));
 
 const ActionIconButton = styled(IconButton)(({ theme }) => ({
@@ -254,16 +300,30 @@ const ActionIconButton = styled(IconButton)(({ theme }) => ({
 
 const SectionTitle = styled(Typography)(({ theme }) => ({
   fontWeight: 700,
-  marginBottom: theme.spacing(2),
-  fontSize: '1.5rem',
-  color: '#333',
+  marginBottom: theme.spacing(3),
+  fontSize: '2rem',
+  color: '#1a237e',
+  position: 'relative',
+  '&:after': {
+    content: '""',
+    position: 'absolute',
+    bottom: -8,
+    left: 0,
+    width: 60,
+    height: 4,
+    background: 'linear-gradient(90deg, #7F7FD5, #91EAE4)',
+    borderRadius: 2,
+  }
 }));
 
 const FavoriteCard = styled(Card)(({ theme }) => ({
-  transition: 'all 0.2s ease',
+  borderRadius: 16,
+  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+  background: 'rgba(255, 255, 255, 0.9)',
+  backdropFilter: 'blur(10px)',
   '&:hover': {
-    transform: 'translateY(-4px)',
-    boxShadow: '0 6px 12px rgba(0,0,0,0.15)',
+    transform: 'translateY(-8px) scale(1.02)',
+    boxShadow: '0 12px 30px rgba(0,0,0,0.15)',
   },
   cursor: 'pointer',
   overflow: 'visible',
@@ -695,25 +755,33 @@ const MusicTherapy = () => {
     switch (activeTab) {
       case 'home':
         return (
-          <Box>
-            <SectionTitle>Welcome to Music Therapy</SectionTitle>
-            <Typography variant="body1" sx={{ mb: 3, color: '#666' }}>
-              Music therapy uses the power of music to improve your mental and emotional well-being.
-              Choose a mood to find the perfect music that resonates with how you're feeling.
+          <Box sx={{ textAlign: 'center', py: 4 }}>
+            <SectionTitle variant="h3" gutterBottom>
+              Welcome to Music Therapy
+            </SectionTitle>
+            <Typography variant="h6" sx={{ mb: 4, color: '#555', maxWidth: 600, mx: 'auto', lineHeight: 1.8 }}>
+              Experience the healing power of music. Our AI-powered platform helps you find the perfect melodies 
+              to match your mood and improve your mental well-being.
             </Typography>
             <Button 
               variant="contained" 
               onClick={() => setActiveTab('discover')}
               sx={{ 
-                bgcolor: '#7F7FD5', 
-                borderRadius: 8,
-                padding: '10px 20px',
+                background: 'linear-gradient(45deg, #7F7FD5 30%, #91EAE4 90%)',
+                borderRadius: 12,
+                padding: '12px 36px',
+                fontSize: '1.1rem',
                 textTransform: 'none',
                 fontWeight: 600,
-                '&:hover': { bgcolor: '#6F6FC5' }
+                boxShadow: '0 4px 20px rgba(127,127,213,0.3)',
+                '&:hover': {
+                  background: 'linear-gradient(45deg, #6F6FC5 30%, #81DAD4 90%)',
+                  transform: 'translateY(-2px)',
+                  boxShadow: '0 6px 25px rgba(127,127,213,0.4)',
+                }
               }}
             >
-              Start Listening
+              Start Your Journey
             </Button>
           </Box>
         );
@@ -723,32 +791,49 @@ const MusicTherapy = () => {
           <Box>
             <SectionTitle>Your Favorites</SectionTitle>
             {favorites.length === 0 ? (
-              <Typography variant="body1" sx={{ color: '#666' }}>
-                You haven't added any favorites yet. Play a song and click the heart icon to add it here.
-              </Typography>
+              <Box 
+                sx={{ 
+                  textAlign: 'center',
+                  py: 8,
+                  backgroundColor: 'rgba(255,255,255,0.8)',
+                  borderRadius: 4,
+                  backdropFilter: 'blur(10px)'
+                }}
+              >
+                <FavoriteIcon sx={{ fontSize: 60, color: '#7F7FD5', opacity: 0.5, mb: 2 }} />
+                <Typography variant="h6" sx={{ color: '#666', mb: 2 }}>
+                  Your favorites list is empty
+                </Typography>
+                <Typography variant="body1" sx={{ color: '#888' }}>
+                  Play a song and click the heart icon to add it to your favorites
+                </Typography>
+              </Box>
             ) : (
-              <Grid container spacing={2}>
+              <Grid container spacing={3}>
                 {favorites.map((favorite, index) => (
                   <Grid item xs={12} sm={6} md={4} key={index}>
-                    <FavoriteCard
-                      onClick={() => handlePlayFavorite(favorite)}
-                    >
-                      <CardContent>
+                    <FavoriteCard onClick={() => handlePlayFavorite(favorite)}>
+                      <CardContent sx={{ p: 3 }}>
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
                           <Avatar 
                             sx={{ 
+                              width: 56,
+                              height: 56,
                               bgcolor: moods.find(m => m.label === favorite.mood)?.color || '#7F7FD5',
                               mr: 2
                             }}
                           >
-                            <MusicNoteIcon />
+                            <MusicNoteIcon sx={{ fontSize: 30 }} />
                           </Avatar>
                           <Box>
-                            <Typography variant="subtitle1" fontWeight={500}>
-                              {favorite.mood} • {favorite.language}
+                            <Typography variant="h6" fontWeight={600}>
+                              {favorite.mood}
                             </Typography>
-                            <Typography variant="body2" sx={{ color: '#666', mt: 0.5 }}>
-                              Added on {new Date(favorite.timestamp).toLocaleDateString()}
+                            <Typography variant="subtitle1" sx={{ color: '#666' }}>
+                              {favorite.language}
+                            </Typography>
+                            <Typography variant="caption" sx={{ color: '#888', display: 'block', mt: 0.5 }}>
+                              Added {new Date(favorite.timestamp).toLocaleDateString()}
                             </Typography>
                           </Box>
                         </Box>
@@ -860,7 +945,7 @@ const MusicTherapy = () => {
     <TherapyRoot>
       {/* Header */}
       <Header>
-        <BackButton color="inherit" onClick={() => navigate('/')}>
+        <BackButton color="inherit" onClick={() => navigate('/home')}>
           <ArrowBackIcon />
         </BackButton>
         <HeaderAvatar>
