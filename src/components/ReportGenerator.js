@@ -134,7 +134,7 @@ const ReportGenerator = () => {
         setScores(null);
 
         try {
-            const endpoint = "http://localhost:3001/api/generate-analysis";
+            const endpoint = "https://mindful-ai-backend-1.onrender.com/api/generate-analysis";
             const response = await fetch(endpoint, { method: "GET" });
 
             if (response.ok) {

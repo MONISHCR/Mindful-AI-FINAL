@@ -27,7 +27,7 @@ const Signup = () => {
 
     try {
       setError("");
-      const response = await axios.post("http://localhost:3001/signup", {
+      const response = await axios.post("https://mindful-ai-backend-1.onrender.com/signup", {
         username,
         email,
         password,

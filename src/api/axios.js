@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: "http://localhost:3001",
+  baseURL: "https://mindful-ai-backend-1.onrender.com",
 });
 
 // Attach token for protected requests

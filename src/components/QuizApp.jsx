@@ -25,7 +25,7 @@ const QuizApp = () => {
 
   // Load quiz on mount
   useEffect(() => {
-    axios.get('http://localhost:3001/quiz')
+    axios.get('https://mindful-ai-backend-1.onrender.com/quiz')
       .then(res => {
         setQuiz(res.data);
         setAnswers(new Array(res.data.questions.length).fill(null));
@@ -67,7 +67,7 @@ const QuizApp = () => {
   const handleSubmit = () => {
     const token = localStorage.getItem("token");
     axios.post(
-      'http://localhost:3001/quiz/submit',
+      'https://mindful-ai-backend-1.onrender.com/quiz/submit',
       {
         quizId: quiz.id,
         answers: answers.map(ans => ans ?? 0)

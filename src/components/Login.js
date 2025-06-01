@@ -275,7 +275,7 @@ const Login = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:3001/login", {
+      const response = await axios.post("https://mindful-ai-backend-1.onrender.com/login", {
         username,
         password,
       });

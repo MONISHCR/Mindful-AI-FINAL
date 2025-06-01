@@ -201,9 +201,9 @@ const Responses = () => {
         };
 
         const [journalRes, moodRes, quizRes] = await Promise.all([
-          fetch(`http://localhost:3001/journal/${userId}`, { headers }),
-          fetch(`http://localhost:3001/mood/${userId}`, { headers }),
-          fetch(`http://localhost:3001/quiz/${userId}`, { headers }),
+          fetch(`https://mindful-ai-backend-1.onrender.com/journal/${userId}`, { headers }),
+          fetch(`https://mindful-ai-backend-1.onrender.com/mood/${userId}`, { headers }),
+          fetch(`https://mindful-ai-backend-1.onrender.com/quiz/${userId}`, { headers }),
         ]);
 
         const [journal, mood, quiz] = await Promise.all([

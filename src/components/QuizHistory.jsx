@@ -15,7 +15,7 @@ const QuizHistory = () => {
         }
 
         try {
-          const res = await axios.get("http://localhost:3001/quiz/history", {
+          const res = await axios.get("https://mindful-ai-backend-1.onrender.com/quiz/history", {
             headers: {
               Authorization: `Bearer ${token}`,
             },

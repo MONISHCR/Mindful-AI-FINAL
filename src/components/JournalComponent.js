@@ -312,7 +312,7 @@ const JournalComponent = () => {
           throw new Error("Authentication token not found");
         }
 
-        const response = await axios.get("http://localhost:3001/journal", {
+        const response = await axios.get("https://mindful-ai-backend-1.onrender.com/journal", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -388,7 +388,7 @@ const JournalComponent = () => {
       }
 
       const response = await axios.post(
-        "http://localhost:3001/journal",
+        "https://mindful-ai-backend-1.onrender.com/journal",
         { content: newEntry },
         {
           headers: {
@@ -440,7 +440,7 @@ const JournalComponent = () => {
         throw new Error("Authentication token not found");
       }
 
-      await axios.delete(`http://localhost:3001/journal/${entryId}`, {
+      await axios.delete(`https://mindful-ai-backend-1.onrender.com/journal/${entryId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

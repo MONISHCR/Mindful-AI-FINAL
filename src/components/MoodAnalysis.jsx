@@ -727,7 +727,7 @@ const MoodAnalysis = () => {
       }));
       console.log("Submitting responses:", JSON.stringify({ responses }, null, 2));
       const response = await axios.post(
-        "http://localhost:3001/mood", // Your Node.js backend for submission
+        "https://mindful-ai-backend-1.onrender.com/mood", // Your Node.js backend for submission
         { responses },
         {
           headers: {

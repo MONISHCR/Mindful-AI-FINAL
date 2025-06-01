@@ -939,7 +939,12 @@ function Chatbot() {
     try {
       const res = await fetch('http://localhost:5001/api/ask', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        },
+        credentials: 'include',
         body: JSON.stringify({ question: textToSubmit }),
       });
       const data = await res.json();
