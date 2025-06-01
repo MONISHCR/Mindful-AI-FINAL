@@ -428,7 +428,7 @@ const ArtTherapy = () => {
                       Generated Art
                     </Typography>
                     <img 
-                      src={`http://localhost:3002${imageUrl}`} 
+                      src={`https://mindful-ai-backend-aby0.onrender.com/${imageUrl}`} 
                       alt="Your Generated AI Art" 
                       loading="lazy"
                     />

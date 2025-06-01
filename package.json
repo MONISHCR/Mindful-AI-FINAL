@@ -1,8 +1,10 @@
 {
+  
   "name": "major-app",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:3002",
+  
+  "proxy": "https://mindful-ai-backend-aby0.onrender.com/",
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
